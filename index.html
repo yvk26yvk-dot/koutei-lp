@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>コウテイちゃん — 今日のあなたを、ぎゅっと抱きしめる日記アプリ</title>
+<meta name="description" content="毎日3分の問いかけに答えると、ペンギンのコウテイちゃんがあたたかく受けとめてくれる。自己肯定感をすこしずつ育てる、やさしい日記アプリ。">
+<meta property="og:title" content="コウテイちゃん — 今日のあなたを、ぎゅっと抱きしめる">
+<meta property="og:description" content="どんな一日も、あたたかく受けとめる日記アプリ。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kouteichan.com/">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --base:#FFFFFF;
+    --cream:#FAF5EC;
+    --white:#FFFFFF;
+    --ink:#322B26;
+    --ink-soft:#7E736A;
+    --rose:#E8977F;
+    --rose-deep:#CE6F55;
+    --rose-soft:#FBEDE6;
+    --leaf:#8FA079;
+    --leaf-deep:#5F7050;
+    --leaf-soft:#EFF4E6;
+    --leaf-mist:#F7FAF1;
+    --gold:#D8A85E;
+    --line:rgba(50,43,38,.10);
+    --r-lg:32px;
+    --r-md:20px;
+    --maru:'Zen Maru Gothic',sans-serif;
+    --kaku:'Zen Kaku Gothic New',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--kaku);color:var(--ink);background:var(--base);line-height:1.9;font-size:16px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--maru);font-weight:700;font-size:18px;text-decoration:none;color:var(--ink);}
+  .logo img{width:34px;height:34px;border-radius:10px;}
+  .nav-links{display:flex;align-items:center;gap:26px;font-size:14px;}
+  .nav-links a{text-decoration:none;color:var(--ink-soft);transition:color .2s;}
+  .nav-links a:hover{color:var(--ink);}
+  .btn{display:inline-block;font-family:var(--maru);font-weight:700;text-decoration:none;border-radius:999px;transition:transform .15s,box-shadow .2s;text-align:center;border:none;cursor:pointer;font-size:16px;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--rose-deep);color:#fff;padding:14px 32px;box-shadow:0 6px 18px rgba(194,107,88,.28);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(194,107,88,.34);}
+  .btn-ghost{border:1.5px solid var(--line);color:var(--ink);padding:13px 26px;background:var(--white);}
+  .btn-nav{background:var(--rose-deep);color:#fff;padding:9px 20px;font-size:14px;}
+
+  /* ---------- floating hearts (signature ambience) ---------- */
+  .heart{position:absolute;bottom:-30px;opacity:0;pointer-events:none;animation:rise linear infinite;}
+  .heart svg{width:100%;height:100%;}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(-8deg) scale(.9);opacity:0;}
+    12%{opacity:var(--o,.5);}
+    85%{opacity:var(--o,.5);}
+    100%{transform:translateY(var(--rise,-560px)) rotate(10deg) scale(1.05);opacity:0;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:80px 0 48px;position:relative;background:linear-gradient(180deg,var(--leaf-mist) 0%,var(--base) 90%);overflow:hidden;}
+  .hero-in{display:grid;grid-template-columns:1.12fr .88fr;gap:48px;align-items:center;position:relative;z-index:2;}
+  .eyebrow{font-family:var(--maru);font-weight:700;font-size:14px;color:var(--leaf-deep);letter-spacing:.14em;margin-bottom:18px;}
+  h1{font-family:var(--maru);font-weight:900;font-size:clamp(34px,4.6vw,52px);line-height:1.5;}
+  h1 .rose{color:var(--rose-deep);}
+  .hero p.lead{margin:22px 0 32px;font-size:17px;color:var(--ink-soft);max-width:30em;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+  .cta-note{font-size:12.5px;color:var(--ink-soft);margin-top:12px;}
+  .hero-fig{position:relative;display:flex;justify-content:center;}
+  .blob{position:absolute;width:118%;aspect-ratio:1;background:radial-gradient(closest-side,rgba(143,160,121,.20),transparent 72%);z-index:0;}
+  .hero-fig img{width:min(330px,78%);position:relative;z-index:1;animation:float 5s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  section{padding:88px 0;position:relative;}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 52px;}
+  .sec-head .eyebrow{margin-bottom:12px;}
+  h2{font-family:var(--maru);font-weight:900;font-size:clamp(25px,3.4vw,35px);line-height:1.65;}
+  .sec-head p{color:var(--ink-soft);margin-top:16px;}
+
+  /* ---------- mirai (ベネフィットの未来像) ---------- */
+  .mirai{background:linear-gradient(180deg,var(--base),var(--leaf-mist) 55%,var(--base));overflow:hidden;position:relative;padding:80px 0;}
+  .mirai-steps{display:flex;align-items:stretch;justify-content:center;gap:14px;max-width:920px;margin:0 auto;}
+  .ms{flex:1;max-width:250px;background:var(--white);border:1px solid rgba(50,43,38,.07);border-radius:var(--r-lg);padding:28px 22px;text-align:center;box-shadow:0 8px 24px rgba(95,112,80,.07);}
+  .ms-when{font-family:var(--maru);font-weight:700;font-size:12.5px;color:var(--leaf-deep);letter-spacing:.1em;margin-bottom:12px;}
+  .ms-what{font-family:var(--maru);font-weight:700;font-size:16px;line-height:1.9;color:var(--ink);}
+  .ms-arrow{align-self:center;color:var(--rose);font-size:18px;}
+  .mirai-close{display:flex;gap:14px;align-items:flex-start;justify-content:center;margin-top:40px;}
+  .mirai-close img{width:52px;height:52px;}
+  .mirai-close .bubble{position:relative;background:var(--rose-soft);border-radius:var(--r-md);padding:14px 22px;font-family:var(--maru);font-weight:700;font-size:15.5px;}
+  .mirai-close .bubble::before{content:'';position:absolute;left:-8px;top:20px;width:14px;height:14px;background:var(--rose-soft);transform:rotate(45deg);}
+  .mirai-close .name{font-size:11px;color:var(--rose-deep);letter-spacing:.08em;margin-bottom:2px;}
+  @media (max-width:860px){
+    .mirai-steps{flex-direction:column;align-items:center;}
+    .ms{max-width:340px;width:100%;}
+    .ms-arrow{transform:rotate(90deg);}
+  }
+
+  /* ---------- try widget (受容の体験) ---------- */
+  .try{background:var(--base);overflow:hidden;}
+  .try-box{max-width:620px;margin:0 auto;background:var(--leaf-mist);border:1.5px solid var(--leaf-soft);border-radius:var(--r-lg);padding:36px 32px;position:relative;}
+  .try-q{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px;}
+  .try-q img{width:54px;height:54px;flex:0 0 auto;}
+  .try-q .bubble{background:var(--white);border:1.5px solid var(--line);border-radius:var(--r-md);padding:15px 20px;font-family:var(--maru);font-weight:700;font-size:16.5px;position:relative;}
+  .try-q .bubble::before{content:'';position:absolute;left:-9px;top:20px;width:15px;height:15px;background:var(--white);border-left:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:rotate(45deg);}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px;}
+  .chips button{font-family:var(--maru);font-size:14px;padding:10px 18px;border-radius:999px;border:1.5px solid var(--leaf);background:var(--white);color:var(--leaf-deep);cursor:pointer;transition:all .15s;}
+  .chips button:hover{background:var(--leaf-soft);transform:translateY(-1px);}
+  .try-input{display:flex;gap:10px;}
+  .try-input input{flex:1;font-family:var(--kaku);font-size:15px;padding:13px 18px;border:1.5px solid var(--line);border-radius:999px;outline:none;background:var(--white);}
+  .try-input input:focus{border-color:var(--leaf);}
+  .try-input .btn{padding:12px 24px;background:var(--leaf-deep);color:#fff;box-shadow:0 5px 14px rgba(95,112,80,.25);}
+  .try-reply{display:none;margin-top:24px;gap:14px;align-items:flex-start;animation:pop .5s ease;}
+  .try-reply.show{display:flex;}
+  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:none;}}
+  .try-reply img{width:64px;height:64px;flex:0 0 auto;}
+  .try-reply .bubble{background:var(--rose-soft);border-radius:var(--r-md);padding:16px 22px;font-family:var(--maru);font-weight:700;font-size:16px;line-height:1.9;position:relative;}
+  .try-reply .bubble::before{content:'';position:absolute;left:-8px;top:24px;width:15px;height:15px;background:var(--rose-soft);transform:rotate(45deg);}
+  .try-reply .name{font-size:11px;color:var(--rose-deep);letter-spacing:.08em;margin-bottom:3px;font-weight:700;}
+  .try-more{display:none;text-align:center;margin-top:22px;font-size:14px;color:var(--ink-soft);}
+  .try-more.show{display:block;animation:pop .6s ease .4s both;}
+  .try-more a{color:var(--rose-deep);font-weight:700;}
+
+  /* ---------- phone mockup ---------- */
+  .appview{background:var(--cream);}
+  .appview-in{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  .screen-tabs{display:flex;flex-direction:column;gap:12px;}
+  .screen-tabs button{text-align:left;font-family:var(--maru);font-weight:700;font-size:16px;padding:18px 22px;border-radius:var(--r-md);border:1.5px solid var(--line);background:var(--base);cursor:pointer;transition:all .2s;color:var(--ink-soft);}
+  .screen-tabs button small{display:block;font-family:var(--kaku);font-weight:400;font-size:13px;margin-top:4px;line-height:1.7;}
+  .screen-tabs button.on{border-color:var(--leaf);background:var(--leaf-soft);color:var(--ink);box-shadow:0 6px 16px rgba(95,112,80,.12);}
+  .phone-wrap{display:flex;justify-content:center;}
+  .phone{width:280px;background:#fff;border:10px solid var(--ink);border-radius:44px;padding:10px 10px;box-shadow:0 24px 60px rgba(58,50,46,.18);position:relative;}
+  .phone::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:var(--ink);border-radius:0 0 14px 14px;z-index:3;}
+  .screen{background:#FDFAF5;border-radius:30px;overflow:hidden;height:520px;position:relative;}
+  .mini{position:absolute;inset:0;padding:40px 16px 66px;display:none;flex-direction:column;font-size:12px;}
+  .mini.on{display:flex;animation:pop .4s ease;}
+  .mini .m-prog{display:flex;gap:3px;margin-bottom:14px;}
+  .mini .m-prog i{flex:1;height:3px;border-radius:2px;background:var(--line);}
+  .mini .m-prog i.f{background:var(--rose);}
+  .mini .m-step{font-size:9.5px;color:var(--ink-soft);letter-spacing:.06em;margin-bottom:6px;}
+  .mini .m-q{font-family:var(--maru);font-weight:700;font-size:15px;line-height:1.55;margin-bottom:5px;}
+  .mini .m-sub{font-size:10.5px;color:var(--ink-soft);margin-bottom:14px;line-height:1.6;}
+  .m-promise{background:var(--leaf-soft);border:1.2px solid var(--leaf);border-radius:12px;padding:10px 12px;font-family:var(--maru);font-weight:700;color:var(--leaf-deep);font-size:12.5px;margin-bottom:12px;}
+  .m-yn{display:flex;gap:7px;}
+  .m-yn span{flex:1;text-align:center;padding:12px 0;border-radius:11px;border:1.2px solid var(--line);background:#fff;font-family:var(--maru);font-weight:700;font-size:12px;color:var(--ink-soft);}
+  .m-yn span.on{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf-deep);}
+  .m-face{width:76px;height:76px;margin:16px auto 10px;}
+  .m-bubble{background:var(--rose-soft);border-radius:14px;padding:13px 15px;font-family:var(--maru);font-weight:700;font-size:12.5px;line-height:1.8;text-align:center;}
+  .m-hearts{text-align:center;font-size:15px;margin-top:12px;letter-spacing:.3em;color:var(--rose);}
+  .m-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+  .m-stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 4px;text-align:center;}
+  .m-stat b{display:block;font-size:17px;font-family:var(--maru);}
+  .m-stat b.g{color:var(--leaf-deep);}
+  .m-stat b.r{color:var(--rose-deep);}
+  .m-stat span{font-size:8.5px;color:var(--ink-soft);}
+  .m-strip{display:flex;gap:4px;margin-bottom:14px;}
+  .m-strip i{flex:1;height:26px;border-radius:8px;background:#fff;border:1px solid var(--line);font-style:normal;display:flex;align-items:center;justify-content:center;font-size:11px;}
+  .m-strip i.f{background:var(--leaf-soft);border-color:var(--leaf);}
+  .m-pillar{background:#fff;border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:7px;}
+  .m-pillar .t{display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:5px;}
+  .m-pillar .bar{height:6px;border-radius:3px;background:var(--leaf-soft);overflow:hidden;}
+  .m-pillar .bar i{display:block;height:100%;background:var(--leaf);border-radius:3px;}
+  .m-tabbar{position:absolute;left:0;right:0;bottom:0;height:54px;background:rgba(255,255,255,.95);border-top:1px solid var(--line);display:flex;z-index:2;}
+  .m-tabbar span{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:8.5px;font-weight:700;color:#B9ADA4;}
+  .m-tabbar span i{font-style:normal;font-size:15px;line-height:1;}
+  .m-tabbar span.on{color:var(--rose-deep);}
+  .m-speech{display:flex;gap:8px;align-items:flex-start;margin-top:auto;margin-bottom:6px;}
+  .m-speech img{width:34px;height:34px;flex:0 0 auto;}
+  .m-speech .b{background:#fff;border:1px solid var(--line);border-radius:11px;padding:8px 11px;font-size:10.5px;line-height:1.7;font-family:var(--maru);font-weight:700;color:var(--ink);}
+
+  /* features */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .card{background:var(--cream);border:1px solid rgba(50,43,38,.06);border-radius:var(--r-lg);padding:36px 28px;text-align:center;}
+  .card img{width:76px;height:76px;margin:0 auto 18px;}
+  .card h3{font-family:var(--maru);font-weight:700;font-size:19px;margin-bottom:12px;}
+  .card p{font-size:14.5px;color:var(--ink-soft);text-align:left;}
+  .card .quote{display:inline-block;margin-top:16px;font-family:var(--maru);font-size:13px;color:var(--leaf-deep);background:var(--leaf-soft);border-radius:999px;padding:7px 16px;}
+
+  /* kotoba (wow words) */
+  .kotoba{background:var(--base);position:relative;overflow:hidden;}
+  .kotoba-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:860px;margin:0 auto;}
+  .kb{display:flex;gap:14px;align-items:flex-start;background:var(--leaf-mist);border:1px solid rgba(50,43,38,.06);border-radius:var(--r-lg);padding:22px 24px;}
+  .kb img{width:56px;height:56px;flex:0 0 auto;}
+  .kb-bubble{font-family:var(--maru);font-weight:700;font-size:15.5px;line-height:2;color:var(--ink);}
+  .kb:nth-child(even){background:var(--rose-soft);}
+  @media (max-width:860px){.kotoba-grid{grid-template-columns:1fr;}}
+
+  /* start */
+  .start .cards{grid-template-columns:repeat(2,1fr);max-width:760px;margin:0 auto;}
+  .start .tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.08em;border-radius:999px;padding:5px 14px;margin-bottom:16px;}
+  .tag-now{background:var(--leaf-soft);color:var(--leaf-deep);}
+  .tag-soon{background:var(--rose-soft);color:var(--rose-deep);}
+  .start .card .btn{margin-top:18px;}
+
+  footer{background:var(--white);border-top:1px solid var(--line);padding:48px 0 40px;}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+  .foot-links{display:flex;gap:22px;font-size:13.5px;}
+  .foot-links a{color:var(--ink-soft);text-decoration:none;}
+  .foot-links a:hover{color:var(--ink);text-decoration:underline;}
+  .copy{font-size:12.5px;color:var(--ink-soft);}
+
+  .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+  .rv.on{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .rv{opacity:1;transform:none;transition:none;}
+    .hero-fig img{animation:none;}
+    .heart{display:none;}
+    html{scroll-behavior:auto;}
+  }
+  @media (max-width:860px){
+    .hero{padding:52px 0 28px;}
+    .hero-in{grid-template-columns:1fr;gap:34px;text-align:center;}
+    .hero p.lead{margin-left:auto;margin-right:auto;}
+    .hero-cta{justify-content:center;}
+    .hero-fig{order:-1;}
+    .hero-fig img{width:min(230px,62%);}
+    .cards,.start .cards{grid-template-columns:1fr;}
+    .appview-in{grid-template-columns:1fr;gap:36px;}
+    .nav-links a:not(.btn){display:none;}
+    section{padding:64px 0;}
+    .try-box{padding:28px 20px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="#"><img src="icon-192.png" alt="">コウテイちゃん</a>
+    <div class="nav-links">
+      <a href="#try">ためしてみる</a>
+      <a href="#app">アプリのなかみ</a>
+      <a href="#kotoba">とどく、ことば</a>
+      <a class="btn btn-nav" href="https://yvk26yvk-dot.github.io/tsumiki/">はじめる</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="hearts-zone">
+  <div class="wrap hero-in">
+    <div>
+      <div class="eyebrow">じぶんを認める、まいにち3分の日記</div>
+      <h1>今日のあなたを、<br><span class="rose">ぎゅっと</span>抱きしめる。</h1>
+      <p class="lead">6つの小さな問いかけに答えるだけ。ペンギンの「コウテイちゃん」が、どんな一日もあたたかく受けとめてくれる。つづけるほど、じぶんのことが、すこしずつ好きになっていく日記です。</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://yvk26yvk-dot.github.io/tsumiki/">Webでいますぐ使う</a>
+        <span class="btn btn-ghost" style="cursor:default;opacity:.75;">App Store 準備中</span>
+      </div>
+      <p class="cta-note">無料ではじめられます。登録はメールアドレスだけ。</p>
+    </div>
+    <div class="hero-fig">
+      <div class="blob"></div>
+      <img src="kotei-body.png" alt="コウテイちゃん — 両手をひろげたペンギンのキャラクター">
+    </div>
+  </div>
+</header>
+
+<section class="mirai" id="mirai">
+  <div class="wrap">
+    <div class="sec-head rv" style="margin-bottom:40px;">
+      <div class="eyebrow">つづけた、そのさきに</div>
+      <h2>じぶんのこと、<br>すこしずつ、好きになっていく。</h2>
+    </div>
+    <div class="mirai-steps">
+      <div class="ms rv">
+        <div class="ms-when">まいにちの中で</div>
+        <div class="ms-what">「きょうも、できてた」に<br>気づけるようになる</div>
+      </div>
+      <div class="ms-arrow rv">♥</div>
+      <div class="ms rv">
+        <div class="ms-when">きろくが育つころ</div>
+        <div class="ms-what">じぶんに、やさしい言葉を<br>かけられるようになる</div>
+      </div>
+      <div class="ms-arrow rv">♥</div>
+      <div class="ms rv">
+        <div class="ms-when">そのさきに</div>
+        <div class="ms-what">だれかと比べない、<br>じぶんだけの毎日がはじまる</div>
+      </div>
+    </div>
+    <div class="mirai-close rv">
+      <img src="kotei-normal.png" alt="">
+      <div class="bubble"><div class="name">コウテイちゃん</div>その日まで、いっしょにいるよ。</div>
+    </div>
+  </div>
+</section>
+
+<section class="try" id="try">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">10びょうで、ためしてみる</div>
+      <h2>きょうできたこと、<br>ひとつだけ教えて？</h2>
+      <p>どんなに小さなことでも大丈夫。コウテイちゃんが受けとめます。</p>
+    </div>
+    <div class="try-box rv">
+      <div class="try-q">
+        <img src="kotei-normal.png" alt="">
+        <div class="bubble">えらぶだけでも、書いてもいいよ。</div>
+      </div>
+      <div class="chips">
+        <button data-c="朝、ちゃんと起きられた">朝、起きられた</button>
+        <button data-c="ごはんを食べた">ごはんを食べた</button>
+        <button data-c="お仕事や勉強をがんばった">がんばった</button>
+        <button data-c="このページに来た">このページに来た</button>
+      </div>
+      <div class="try-input">
+        <input type="text" id="try-text" placeholder="じぶんの言葉で書いてもOK" maxlength="60">
+        <button class="btn" id="try-send">おくる</button>
+      </div>
+      <div class="try-reply" id="try-reply">
+        <img src="kotei-cheer.png" alt="">
+        <div class="bubble"><div class="name">コウテイちゃん</div><span id="try-msg"></span></div>
+      </div>
+      <div class="try-more" id="try-more">
+        これが、毎日つづくアプリです。<br><a href="https://yvk26yvk-dot.github.io/tsumiki/">きょうの残りも、記録してみる →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="appview" id="app">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">アプリのなかみ</div>
+      <h2>つかいごこち、のぞいてみて。</h2>
+    </div>
+    <div class="appview-in">
+      <div class="screen-tabs rv">
+        <button class="on" data-s="0">1. まいにち、6つの問いかけ<small>スライド式だから迷わない。1日3分、えらぶだけでも進めます。</small></button>
+        <button data-s="1">2. コウテイちゃんが受けとめる<small>記録を渡すと、その日のあなたに合わせた言葉が返ってきます。</small></button>
+        <button data-s="2">3. 週にいちど、大きくふりかえる<small>人生の柱と、よかったこと。積み重ねが目に見えます。</small></button>
+      </div>
+      <div class="phone-wrap rv">
+        <div class="phone"><div class="screen">
+
+          <div class="mini on" data-m="0">
+            <div class="m-prog"><i class="f"></i><i class="f"></i><i></i><i></i><i></i><i></i></div>
+            <div class="m-step">1 / 6 ・ 自分との約束</div>
+            <div class="m-q">今日、自分との小さな約束を守れた？</div>
+            <div class="m-sub">「自分は約束を守る人間だ」その感覚が、自信を育てるよ。</div>
+            <div class="m-promise">朝7時に起きる</div>
+            <div class="m-yn"><span class="on">守れた ◎</span><span>今日はできなかった</span></div>
+            <div class="m-speech"><img src="kotei-normal.png" alt=""><div class="b">むりせず、答えられるところだけでいいからね。</div></div>
+          </div>
+
+          <div class="mini" data-m="1" style="justify-content:center;">
+            <img class="m-face" src="kotei-cheer.png" alt="">
+            <div class="m-bubble">今日はたくさん、自分を認められたね。<br>すごいことだよ。<br>よくがんばった、えらい。</div>
+            <div class="m-hearts">♥ ♥ ♥</div>
+            <div class="m-speech" style="margin-top:22px;"><img src="kotei-normal.png" alt=""><div class="b">また明日も、待ってるね。</div></div>
+          </div>
+
+          <div class="mini" data-m="2">
+            <div class="m-step" style="margin-top:4px;">この7日間のふりかえり</div>
+            <div class="m-q" style="font-size:14px;">つみかさねを、ながめる</div>
+            <div class="m-stats" style="margin-top:10px;">
+              <div class="m-stat"><b class="g">6</b><span>記録した日</span></div>
+              <div class="m-stat"><b>23</b><span>できたこと</span></div>
+              <div class="m-stat"><b class="r">8</b><span>よかったこと</span></div>
+            </div>
+            <div class="m-strip"><i class="f">🌷</i><i class="f">🌷</i><i></i><i class="f">🌷</i><i class="f">🌷</i><i class="f">🌷</i><i class="f">🌷</i></div>
+            <div class="m-pillar"><div class="t"><span>仕事</span><span>4</span></div><div class="bar"><i style="width:80%"></i></div></div>
+            <div class="m-pillar"><div class="t"><span>友達</span><span>3</span></div><div class="bar"><i style="width:60%"></i></div></div>
+            <div class="m-pillar"><div class="t"><span>趣味</span><span>5</span></div><div class="bar"><i style="width:100%"></i></div></div>
+          </div>
+
+          <div class="m-tabbar" id="m-tabbar">
+            <span class="on"><i>♥</i>きょう</span>
+            <span><i>🌱</i>ふりかえり</span>
+            <span><i>📖</i>きろく</span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">できること</div>
+      <h2>がんばりを増やすんじゃなくて、<br>「できてた」に気づく仕組み。</h2>
+    </div>
+    <div class="cards">
+      <div class="card rv">
+        <img src="kotei-normal.png" alt="">
+        <h3>1日3分、6つの問いかけ</h3>
+        <p>自分との小さな約束、人格が光った行動、感情の受けとめ——スライド式の6問に答えるだけ。成果ではなく「どう在れたか」を記録します。</p>
+        <span class="quote">「今日も来てくれたね」</span>
+      </div>
+      <div class="card rv">
+        <img src="kotei-cheer.png" alt="">
+        <h3>どんな日も、まるごと味方</h3>
+        <p>チェックが少ない日も、空欄の日も、コウテイちゃんはいつでもあたたかいまま。どんな一日にも、認められることがちゃんとあるから。</p>
+        <span class="quote">「それで十分だよ」</span>
+      </div>
+      <div class="card rv">
+        <img src="kotei-care.png" alt="">
+        <h3>人生の柱を、ふやしていく</h3>
+        <p>週に一度は大きな目で。仕事・友達・趣味・家族——8本の「人生の柱」を眺めて、ひとつが揺れても大丈夫な自分をつくります。</p>
+        <span class="quote">「世界、広がってるよ」</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kotoba" class="kotoba">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">つかった人だけが、もらえることば</div>
+      <h2>毎日のおわりに、<br>こんな言葉が届きます。</h2>
+      <p>あなたのその日の記録に合わせて、コウテイちゃんが言葉を選びます。</p>
+    </div>
+    <div class="kotoba-grid">
+      <div class="kb rv"><img src="kotei-cheer.png" alt=""><div class="kb-bubble">今日はたくさん、自分を認められたね。すごいことだよ。よくがんばった、えらい。</div></div>
+      <div class="kb rv"><img src="kotei-normal.png" alt=""><div class="kb-bubble">ひとつでも残せたなら、それで十分。今日のあなたは、ちゃんと前を向いてた。</div></div>
+      <div class="kb rv"><img src="kotei-care.png" alt=""><div class="kb-bubble">気持ちを、ちゃんと感じられたんだね。それも大事にしていいんだよ。</div></div>
+      <div class="kb rv"><img src="kotei-cheer.png" alt=""><div class="kb-bubble">誰かのためになれた日は、自分のことも好きになれるね。</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="start" style="background:var(--leaf-mist);">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">はじめかた</div>
+      <h2>今日から、はじめられます。</h2>
+    </div>
+    <div class="cards">
+      <div class="card rv">
+        <span class="tag tag-now">いま使える</span>
+        <h3>Web版(無料)</h3>
+        <p>ブラウザですぐ使えます。メールアドレスで登録すれば、記録はクラウドに安全に保存。機種変してもアプリを消しても、あなたの記録は消えません。</p>
+        <a class="btn btn-primary" href="https://yvk26yvk-dot.github.io/tsumiki/">Webでいますぐ使う</a>
+      </div>
+      <div class="card rv">
+        <span class="tag tag-soon">準備中</span>
+        <h3>iOSアプリ</h3>
+        <p>App Store版を準備しています。毎晩のやさしいリマインド通知など、アプリならではの機能を搭載予定。もうすこしだけ待っててね。</p>
+        <span class="btn btn-ghost" style="cursor:default;opacity:.7;">Coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <a class="logo" href="#"><img src="icon-192.png" alt="">コウテイちゃん</a>
+    <div class="foot-links">
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+      <a href="mailto:contact@kouteichan.com">お問い合わせ</a>
+    </div>
+    <div class="copy">© 2026 コウテイちゃん</div>
+  </div>
+</footer>
+
+<script>
+/* reveal */
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}});},{threshold:.15});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+/* floating hearts */
+function heartSVG(color){return '<svg viewBox="0 0 24 24" fill="'+color+'"><path d="M12 21s-7.5-4.7-10-9.3C.5 8.6 2.6 5 6.2 5c2 0 3.6 1.1 4.4 2.7h2.8C14.2 6.1 15.8 5 17.8 5c3.6 0 5.7 3.6 4.2 6.7C19.5 16.3 12 21 12 21Z"/></svg>';}
+function spawnHearts(zone,count,colors){
+  const el=document.getElementById(zone);if(!el)return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  for(let i=0;i<count;i++){
+    const h=document.createElement('span');h.className='heart';
+    const size=10+Math.random()*18;
+    h.style.width=size+'px';h.style.height=size+'px';
+    h.style.left=(3+Math.random()*94)+'%';
+    h.style.setProperty('--o',(0.18+Math.random()*0.3).toFixed(2));
+    h.style.setProperty('--rise',-(el.offsetHeight*0.75+Math.random()*el.offsetHeight*0.35)+'px');
+    h.style.animationDuration=(9+Math.random()*9)+'s';
+    h.style.animationDelay=(-Math.random()*16)+'s';
+    h.innerHTML=heartSVG(colors[i%colors.length]);
+    el.appendChild(h);
+  }
+}
+spawnHearts('hearts-zone',14,['rgba(224,144,127,.75)','rgba(143,160,121,.55)','rgba(216,168,94,.55)']);
+spawnHearts('mirai',7,['rgba(232,151,127,.35)','rgba(143,160,121,.3)']);
+spawnHearts('kotoba',8,['rgba(232,151,127,.4)','rgba(143,160,121,.35)']);
+
+/* try widget */
+const REPLIES=[
+  'それ、ちゃんとできたんだね。えらいよ。ひとつできてたら、その日はもう合格。',
+  'うんうん、聞かせてくれてありがとう。それができたあなたを、わたしは知ってるよ。',
+  'すてき。小さく見えても、それは今日のあなたが積んだ、ほんものの一歩だよ。',
+  'ちゃんと自分の「できた」に気づけたね。その目が、これから宝物になるよ。'
+];
+function tryReply(text){
+  const msg=document.getElementById('try-msg');
+  msg.textContent=REPLIES[Math.floor(Math.random()*REPLIES.length)];
+  document.getElementById('try-reply').classList.add('show');
+  document.getElementById('try-more').classList.add('show');
+}
+document.querySelectorAll('.chips button').forEach(b=>b.onclick=()=>tryReply(b.dataset.c));
+document.getElementById('try-send').onclick=()=>{const v=document.getElementById('try-text').value.trim();if(v)tryReply(v);};
+document.getElementById('try-text').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=e.target.value.trim();if(v)tryReply(v);}});
+
+/* phone screen tabs */
+document.querySelectorAll('.screen-tabs button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.screen-tabs button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.mini').forEach(m=>m.classList.toggle('on',m.dataset.m===b.dataset.s));
+    const tabs=document.querySelectorAll('#m-tabbar span');
+    tabs.forEach(t=>t.classList.remove('on'));
+    tabs[b.dataset.s==='2'?1:0].classList.add('on');
+  };
+});
+</script>
+</body>
+</html>
